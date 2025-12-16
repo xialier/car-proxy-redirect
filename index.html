@@ -8,6 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        /* 样式代码保持不变，省略 */
         body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f4; }
         .container { max-width: 600px; margin: auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         h1 { color: #333; }
@@ -42,48 +43,46 @@
     </div>
 
     <script>
-        // *** 替换为您的 favorites.json 的 Raw 链接 ***
-        const JSON_GIST_FILE = 'https://gist.github.com/xialier/087990f8d497b9eedb96dc9acda97b56/raw/favorites.json';
+        // *** JSON 文件现在位于 Pages 仓库的 data 文件夹下 ***
+        const JSON_CONFIG_FILE = './data/favorites.json';
 
-        // 步骤 1: 读取 JSON 收藏列表
-        fetch(JSON_GIST_FILE)
+        // 步骤 1: 读取 JSON 收藏列表 (同源，不会有 CORS 问题)
+        fetch(JSON_CONFIG_FILE)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('无法加载收藏列表: ' + response.status);
+                    throw new Error('网络错误或文件未找到: ' + response.status);
                 }
                 return response.json();
             })
             .then(favorites => {
                 const listContainer = document.getElementById('favorites-list');
-                listContainer.innerHTML = ''; // 清除加载信息
+                listContainer.innerHTML = ''; 
                 
                 favorites.forEach(item => {
-                    // 步骤 2: 为每个收藏项创建按钮
                     const button = document.createElement('a');
                     button.className = 'item-button';
                     button.textContent = item.name;
-                    button.href = '#'; // 初始链接设置为#
+                    button.href = '#';
 
-                    // 步骤 3: 为按钮添加点击事件
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
                         button.textContent = '加载中...';
                         
-                        // 步骤 4: 点击后，去读取该收藏项对应的变动 URL 文件
-                        fetch(item.url_gist_raw)
+                        // 步骤 2: 点击后，去读取该收藏项对应的 TXT 文件
+                        fetch(item.url_path) // 使用新的 url_path 字段
                             .then(response => response.text())
                             .then(targetUrl => {
                                 const finalUrl = targetUrl.trim();
                                 if (finalUrl) {
-                                    // 步骤 5: 跳转到最新的代理地址
+                                    // 步骤 3: 跳转到最新的代理地址
                                     window.location.replace(finalUrl);
                                 } else {
                                     alert('错误：目标地址为空！');
                                 }
                             })
                             .catch(error => {
-                                alert('跳转失败: ' + error.message);
-                                button.textContent = item.name; // 恢复按钮文本
+                                alert('获取目标地址失败: ' + error.message);
+                                button.textContent = item.name;
                             });
                     });
                     
@@ -91,7 +90,7 @@
                 });
             })
             .catch(error => {
-                document.getElementById('favorites-list').innerHTML = `<p style="color:red;">加载收藏夹失败: ${error.message}</p>`;
+                document.getElementById('favorites-list').innerHTML = `<p style="color:red;">加载收藏夹配置失败，请检查 ${JSON_CONFIG_FILE} 文件：${error.message}</p>`;
                 console.error("加载收藏夹失败:", error);
             });
     </script>
