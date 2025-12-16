@@ -6,5 +6,9 @@
     {
         "name": "欧飞-TW 代理",
         "url_path": "./data/ofiii.txt"
+    },
+    {
+        "name": "油管-TW 代理",
+        "url_path": "./data/youtube.txt"
     }
 ]
