@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>代理地址跳转中...</title>
+    <meta charset="utf-8">
+    <script>
+        // 步骤 1: 定义存放代理地址的文件的 Raw URL
+        const PROXY_URL_FILE = 'https://gist.githubusercontent.com/xialier/1fc19fb4cd77758b411bb1e5460e0270/raw/90e5b9e80e6b276710f90fbc4d3e88d342cdc9e5/proxy_url.txt';
+        
+        // 步骤 2: 使用 fetch API 获取最新的代理地址
+        fetch(PROXY_URL_FILE)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络错误 ' + response.status);
+                }
+                // 步骤 3: 以纯文本形式读取内容
+                return response.text();
+            })
+            .then(url => {
+                // 步骤 4: 清理获取到的网址（去除首尾空格/换行）
+                const targetUrl = url.trim();
+                if (targetUrl) {
+                    // 步骤 5: 执行重定向
+                    window.location.replace(targetUrl);
+                } else {
+                    document.body.innerHTML = "<h3>错误：目标地址为空！</h3>";
+                }
+            })
+            .catch(error => {
+                console.error("获取代理地址失败:", error);
+                document.body.innerHTML = `<h3>加载错误: ${error.message}</h3>`;
+            });
+
+        // 提示信息，在加载时显示
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.innerHTML = '<h2>正在加载最新代理地址，请稍候...</h2><p>如果长时间未跳转，请检查网络或配置。</p>';
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
