@@ -1,0 +1,12 @@
+[
+    {
+        "name": "UB1818-US代理",
+        "url_path": "./data/ubtv.txt" 
+        // 注意：现在是相对路径或 Pages URL
+    },
+    {
+        "name": "欧飞-TW 代理",
+        "url_path": "./data/ofiii.txt"
+    },
+    // ... 其他收藏
+]
